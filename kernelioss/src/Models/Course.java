@@ -1,112 +1,230 @@
 package Models;
-import java.sql.Connection;
 
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.Vector;
-import java.sql.CallableStatement;
+
+import java.util.*;
 
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-
+import Models.CourseRepository;
 
 public class Course {
-
 	
-  
+private CourseRepository courseRepository = new CourseRepository();
+private int  corseID;
+private int  corseType;
+private Date startDate;
+private Date endDate;
+private int  dayOfWeekID;
+private String  networkingLecturer;
+private String  systemLecturer;
+private String  syberLecturer;
+private Date networkingStartDate;
+private Date systemStartDate;
+private Date syberStartDate;
+private Date networkingEndDate;
+private Date systemEndDate;
+private Date  syberEndDate;
+private Date  testDate;
+private String TypeDesc;
+private int  networkingLecturerID;
+private int  systemLecturerID;
+private int  syberLecturerID;
+private String dayOfWeekDesc;
 
-	public static void main (String [] args) {
+							
+public Course(int courseID,int courseType,Date startDate,Date endDate,int  dayOfWeekID,int  networkingLecturerID,int  systemLecturerID,int  syberLecturerID,
+		Date networkingStartDate,Date systemStartDate,Date syberStartDate,Date networkingEndDate,Date systemEndDate, Date  syberEndDate, Date  testDate		) {
+	
+this.corseID=courseID;
+this.corseType=courseType;
+this.startDate=startDate;
+this.endDate=endDate;
+this.dayOfWeekID=dayOfWeekID;
+this.networkingLecturerID=networkingLecturerID;
+this.systemLecturerID=systemLecturerID;
+this.syberLecturerID=syberLecturerID;
+this.networkingStartDate=networkingStartDate;
+this.systemStartDate=systemStartDate;
+this.syberStartDate=syberStartDate;
+this.networkingEndDate=networkingEndDate;
+this.systemEndDate=systemEndDate;
+this.syberEndDate=syberEndDate;
+this.testDate=testDate;
+
+}
+
+public Course()
+{
+	this.corseID=-1;
+	this.corseType=1;
+	this.startDate=new Date();
+	this.endDate=new Date();
+	this.dayOfWeekID=1;
+	this.networkingLecturer="";
+	this.systemLecturer="";
+	this.syberLecturer="";
+	this.networkingStartDate=new Date();
+	this.systemStartDate=new Date();
+	this.syberStartDate=new Date();
+	this.networkingEndDate=new Date();
+	this.systemEndDate=new Date();
+	this.syberEndDate=new Date();
+	this.testDate=new Date();
+	this.TypeDesc="";
+	this.networkingLecturerID=0;
+	this.systemLecturerID=0;
+	this.syberLecturerID=0;
+
+}
+	
+	
+	public Boolean SetCourseData (Course c)
+	{
+		if(this.courseRepository.SetCourse(c)==true)
+	          return true;
 		
-	}
-										
-
-	/**
-	 * Create the application.
-	 */
-	public Course() {
-   	initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-				
+		return false;
 	}
 	
 	
     public JTable GetCourseData()
     {
-    	String jdbcurl;
-		Connection con = null;	
-	    ResultSet rs=null;
-	    JTable table=null;
-		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		}catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}		
-		jdbcurl = "jdbc:sqlserver://MOSHIKO-PC\\SQLEXPRESS;databaseName=kernelios;integratedSecurity=true";		
-		try {
-			con=DriverManager.getConnection(jdbcurl);
-					
-		}catch (SQLException e)
-		
-		{
-			e.printStackTrace();
-		}		
-		try
-		{
-			
-			CallableStatement cstmt = con.prepareCall("{call GetCourses()}");
-			 rs = cstmt.executeQuery();				
-			table = new JTable(buildTableModel(rs));
-					
-			
-      //	while (rs.next())
-		//{
-		//		System.out.println("ID= "+rs.getInt("corseId")+"Name= "+rs.getInt("corseType"));			
-	//	}
-										
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}	
-    	return table;
+    	return  this.courseRepository.GetCourseData();
+    }
+  
+    public int GetCourseID()
+    {
+    	return this.corseID;
     }
     
-    public static DefaultTableModel buildTableModel(ResultSet rs)
-            throws SQLException {
-
-        ResultSetMetaData metaData = rs.getMetaData();
-
-        // names of columns
-        Vector<String> columnNames = new Vector<String>();
-        int columnCount = metaData.getColumnCount();
-        for (int column = 1; column <= columnCount; column++) {
-            columnNames.add(metaData.getColumnName(column));
-        }
-
-        // data of the table
-        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-        while (rs.next()) {
-            Vector<Object> vector = new Vector<Object>();
-            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                vector.add(rs.getObject(columnIndex));
-            }
-            data.add(vector);
-        }
-
-   
-        return new DefaultTableModel(data, columnNames);
-
+    public int GetCourseType()
+    {
+    	return this.corseType;
     }
-      	  
+    
+    public Date GetCourseStartDate()
+    {
+    	return this.startDate;
+    }
+    
+    public Date GetCourseEndDate()
+    {
+    	return this.endDate;
+    }
+    
+    public int GetCourseDayOfWeekID()
+    {
+    	return this.dayOfWeekID;
+    }
+    public String GetCourseDayOfWeekDesc()
+    {
+    	return this.dayOfWeekDesc;
+    }
+    
+    public String GetCourseNetworkingLecturer()
+    {
+    	return this.networkingLecturer;
+    }
+    
+    public String GetCourseSystemLecturer()
+    {
+    	return this.systemLecturer;
+    }
+    
+    public String GetCourseSyberLecturer()
+    {
+    	return this.syberLecturer;
+    }
+    
+    
+    public Date GetNetworkingStartDate()
+    {
+    	return this.networkingStartDate;
+    }
+    
+    public Date GetNetworkingEndDate()
+    {
+    	return this.networkingEndDate;
+    }
+    
+    
+    public Date GetSystemStartDate()
+    {
+    	return this.systemStartDate;
+    }
+    
+    public Date GetSystemEndDate()
+    {
+    	return this.systemEndDate;
+    }
+    
+        
+    public Date GetSyberStartDate()
+    {
+    	return this.syberStartDate;
+    }
+    
+    public Date GetSyberEndDate()
+    {
+    	return this.syberEndDate;
+    }
+    
+    
+    public Date GetTestDate()
+    {
+    	return this.testDate;
+    }
+    
+    public String GetTypeDesc()
+    {
+    	return this.TypeDesc;
+    }
+    public int GetNetworkingLecturerID()
+    {
+    	return this.networkingLecturerID;
+    }
+    public int GetSystemLecturerID()
+    {
+    	return this.systemLecturerID;
+    }
+    public int GetSyberLecturerID()
+    {
+    	return this.syberLecturerID;
+    }
+    
+    public Boolean DeleteCourse (int courseID) {
+    	if(this.courseRepository.DeleteCourse(courseID)==true)
+	          return true;
+		
+		return false;
+    }
+    
+    public JTable GetDaysOfWeek()
+    {
+    	return this.courseRepository.GetDaysOfWeek();
+    }
+       
+    
+    public int GetNextCourseNumber()
+    {
+    	return this.courseRepository.GetNextCourseNumber();
+    }
+    
+    
+    public JTable GetCourseTypes()
+    {
+    	return this.courseRepository.GetCourseTypes();
+    }
+    
+    public boolean InsertNewCourse(Course c)
+    {
+    	return this.courseRepository.InsertNewCourse(c);
+    }
+    
+    public JTable GetStudentsInCourse(int courseID)
+    {
+    	return this.courseRepository.GetStudentsInCourse(courseID);
+    }
+    
+   }
     	 
-}
+
