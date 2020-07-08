@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -84,7 +85,7 @@ public class CourseRepository {
 	    	return table;
 	    }
 	      
-    
+     
      public JTable GetCourseTypes()
 	    {
 	    		
@@ -100,6 +101,32 @@ public class CourseRepository {
 			try
 			{			
 				CallableStatement cstmt = this.conn.prepareCall("{call GetCourseTypes()}");
+				 rs = cstmt.executeQuery();				
+				table = new JTable(buildTableModel(rs));
+														
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}	
+	    	return table;
+	    }
+     
+     public JTable GetCoursesForStudents()
+	    {
+	    		
+		    ResultSet rs=null;
+		    JTable table=null;
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			}catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}		
+						
+			try
+			{			
+				CallableStatement cstmt = this.conn.prepareCall("{call GetCoursesForStudents()}");
 				 rs = cstmt.executeQuery();				
 				table = new JTable(buildTableModel(rs));
 														
@@ -271,5 +298,67 @@ public class CourseRepository {
 	}
 
 	
+	  public boolean IsCourseEnded(int courseID)
+	   {
+		  try {
+		  String commandText = "{call IsCourseEnded(?,?)}";
+			 CallableStatement stmt = this.conn.prepareCall(commandText);
+			     stmt.setObject(1,courseID);
+			    stmt.registerOutParameter(2,Types.INTEGER);
+		        stmt.executeUpdate();	
+		        int isEnded = stmt.getInt(2);
+		        
+		     if(isEnded>0)
+			     return true;
+		     
+		     return false;
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+			return false;
+	  }
+	  
+	  public boolean IsCourseHaveStudents(int courseID)
+	   {
+		  try {
+		  String commandText = "{call IsCourseHaveStudents(?,?)}";
+			 CallableStatement stmt = this.conn.prepareCall(commandText);
+			     stmt.setObject(1,courseID);
+			    stmt.registerOutParameter(2,Types.INTEGER);
+		        stmt.executeUpdate();	
+		        int numOfStudent = stmt.getInt(2);
+		        
+		     if(numOfStudent>0)
+			     return true;
+		     
+		     return false;
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+			return false;
+	  }
+	
+	  public boolean AddStudentToCourse(String studentID,int courseID)
+		 {
+		  try {
+			  String commandText = "{call AddStudentToCourse(?,?)}";
+				 CallableStatement stmt = this.conn.prepareCall(commandText);
+				     stmt.setObject(1,studentID);
+				     stmt.setObject(2,courseID);
+			        stmt.executeUpdate();	
+			        		
+				     return true;
+			     
+				}
+				catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+				return false;
+		 } 
 	
 }
