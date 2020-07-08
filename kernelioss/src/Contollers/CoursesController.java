@@ -3,9 +3,11 @@ package Contollers;
 
 import java.util.Date;
 
+
 import javax.swing.JTable;
 
 import Models.Course;
+import Models.Student;
 
 
 public class CoursesController  {
@@ -171,6 +173,26 @@ public class CoursesController  {
 	    	return this.model.GetStudentsInCourse(courseID);
 	    }
 	    
+	    public JTable GetCoursesForStudents()
+	    {
+	    	return this.model.GetCoursesForStudents();
+	    }
+	    
+	    public boolean IsCourseEnded(int courseID)
+	    {
+	    	return this.model.IsCourseEnded(courseID);
+	    }
+	    
+	    public boolean IsCourseHaveStudents(int courseID)
+	    {
+	      	return this.model.IsCourseHaveStudents(courseID);
+	    }
+	    
+	 public boolean AddStudentToCourse(String StudentID,int courseID)
+	 {
+		 return this.model.AddStudentToCourse(StudentID,courseID);
+	 }
+		
 	
 }
 
