@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class MainFrameView extends JFrame  implements Runnable{
+public class MainView extends JFrame  implements Runnable{
 
 	private JPanel contentPane;
 
@@ -38,7 +38,7 @@ public class MainFrameView extends JFrame  implements Runnable{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrameView frame = new MainFrameView();
+					MainView frame = new MainView();
 					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 					frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 					frame.setVisible(true);
@@ -52,7 +52,7 @@ public class MainFrameView extends JFrame  implements Runnable{
 	/**
 	 * Create the frame.
 	 */
-	public MainFrameView() {
+	public MainView() {
 		setResizable(false);
 		setTitle("\u05D1\u05E8\u05D5\u05DB\u05D9\u05DD \u05D4\u05D1\u05D0\u05D9\u05DD \u05DC\u05E7\u05E8\u05E0\u05DC\u05D9\u05D5\u05E1");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,6 +78,12 @@ public class MainFrameView extends JFrame  implements Runnable{
 		panel.add(separator);
 		
 		JButton btnStudents = new JButton("\u05E1\u05D8\u05D5\u05D3\u05E0\u05D8\u05D9\u05DD");
+		btnStudents.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	StudentsView sv=new StudentsView();
+            	sv.setVisible(true);
+            }
+        });
 		panel.add(btnStudents);
 		
 		JSeparator separator_1 = new JSeparator();
@@ -87,7 +93,6 @@ public class MainFrameView extends JFrame  implements Runnable{
 		btnCourses.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	              CourseView cs=new CourseView();
-	           //   cs.getCourseView();
 	              cs.setVisible(true);
 	            }
 	        });
@@ -98,6 +103,12 @@ public class MainFrameView extends JFrame  implements Runnable{
 		panel.add(separator_2);
 		
 		JButton btnLecturers = new JButton("\u05DE\u05E8\u05E6\u05D9\u05DD");
+		btnLecturers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	LecturersView lv=new LecturersView();
+              lv.setVisible(true);
+            }
+        });
 		panel.add(btnLecturers);
 		
 		
