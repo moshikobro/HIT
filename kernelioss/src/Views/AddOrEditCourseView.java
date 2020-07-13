@@ -57,21 +57,25 @@ public class AddOrEditCourseView extends JFrame {
 	 final JTable tableSpecializationInSystem;
 	 final JTable tableSpecializationInSyber ;
 	private CoursesController coursesController=new CoursesController();
+	private CoursesController LoadedcoursesController=new CoursesController();
 	private LecturersController lecturersController=new LecturersController();
     private String selectedDayOfWeek=null;
     private String selectedCourseType=null;
     private String selectedNetworkingLecturer=null;
     private String selectedSystemLecturer=null;
     private String selectedSyberLecturer=null;
+    int x=0;
     private String frameTitel=null;
     int i=0;
 	int currentNetworkingLecturer=0;
 	int currentSystemLecturer=0;
 	int currentSyberLecturer=0;
+	boolean loadMode=true;
 	JTable m_table=new JTable();
-	
+	static AddOrEditCourseView frame= new AddOrEditCourseView() ;
+	JButton btnSave = new JButton("\u05E9\u05DE\u05D5\u05E8");
      static AddOrEditCourseView m_AddOrEditCoursesView;
-	 	
+
 	public static AddOrEditCourseView getAddOrEditCourseView() {
 		if (m_AddOrEditCoursesView == null)
 			m_AddOrEditCoursesView = new AddOrEditCourseView();
@@ -79,28 +83,42 @@ public class AddOrEditCourseView extends JFrame {
 	}
 	
    public void LoadCourseForEdit(CoursesController c,JTable table)
-   {
+   { 
+	
        this.setTitle("עריכת קורס");
        frameTitel="עריכת קורס";
+       this.LoadedcoursesController=c;
 	   this.txtCourseId.setText(String.valueOf(c.GetCourseID()));
 	   this.txtCourseId.setEnabled(false);
 	   cmbDaysOfWeek.setSelectedIndex(c.GetCourseDayOfWeekID()-1);
+	   cmbDaysOfWeek.setEnabled(true);
 	   cmbCourseType.setSelectedIndex(c.GetCourseType()-1);
+	   cmbCourseType.setEnabled(true);
 	   this.dtpStartDate.setDate(c.GetCourseStartDate());
+	   dtpStartDate.setEnabled(true);
 	   this.dtpEndDate.setDate(c.GetCourseEndDate());
+	   dtpEndDate.setEnabled(true);
 	   this.dtpSystemStartDate.setDate(c.GetSystemStartDate());
+	   dtpSystemStartDate.setEnabled(true);
 	   this.dtpSystemEndDate.setDate(c.GetSystemEndDate());
+	   dtpSystemEndDate.setEnabled(true);
 	   this.dtpNetworkingStartDate.setDate(c.GetNetworkingStartDate());
+	   dtpNetworkingStartDate.setEnabled(true);
 	   this.dtpNetworkingEndDate.setDate(c.GetNetworkingEndDate());
+	   dtpNetworkingEndDate.setEnabled(true);
 	   this.dtpSyberStartDate.setDate(c.GetSyberStartDate());
+	   dtpSyberStartDate.setEnabled(true);
 	   this.dtpSyberEndDate.setDate(c.GetSyberEndDate());
+	   dtpSyberEndDate.setEnabled(true);
 	   this.dtpFinalTest.setDate(c.GetTestDate());
+	   dtpFinalTest.setEnabled(true);
 	  
 	   for(int i=0;i< tableSpecializationInNetwork.getRowCount();i++)
 	   {
 		   if(Integer.parseInt(tableSpecializationInNetwork.getValueAt(i,0).toString())==c.GetNetworkingLecturerID())
 		   {
 			   this.cmbNetworkingLecturer.setSelectedIndex(i); 
+			   this.cmbNetworkingLecturer.setEnabled(true);
 			 currentNetworkingLecturer =i;
 		   }
 	   }
@@ -110,6 +128,7 @@ public class AddOrEditCourseView extends JFrame {
 		   if(Integer.parseInt(tableSpecializationInSystem.getValueAt(i,0).toString())==c.GetSystemLecturerID())
 		   {
 			   this.cmbSystemLecturer.setSelectedIndex(i);
+			   this.cmbSystemLecturer.setEnabled(true);
 			   currentSystemLecturer=i;
 		   }
 	   }
@@ -119,46 +138,145 @@ public class AddOrEditCourseView extends JFrame {
 		   if(Integer.parseInt(tableSpecializationInSyber.getValueAt(i,0).toString())==c.GetSyberLecturerID())
 		   {
 			   this.cmbSyberLecturer.setSelectedIndex(i); 
+			   this.cmbSyberLecturer.setEnabled(true);
 			   currentSyberLecturer=i;
 		   }
 	   }
 	   this.m_table=table;
-	  
+	   btnSave.setVisible(true);
+	 
+	   loadMode=false;
    }
    
+   public void setLoanMode (boolean b)
+   {
+	  this.loadMode=b; 
+   }
    public void AddNewCourse(JTable table)
    {
        this.setTitle("הוספת קורס");
        frameTitel="הוספת קורס";
 	   this.txtCourseId.setText(String.valueOf(coursesController.GetNextCourseNumber()));
 	   this.txtCourseId.setEnabled(false);
+	   
 	   cmbDaysOfWeek.setSelectedIndex(-1);
+	   this.cmbDaysOfWeek.setEnabled(true);
+	   
 	   cmbCourseType.setSelectedIndex(-1);
+	   this.cmbCourseType.setEnabled(true);
+	   
 	   this.dtpStartDate.setDate(new Date());
+	   this.dtpStartDate.setEnabled(true);
+	   
 	   this.dtpEndDate.setDate(new Date());
+	   this.dtpEndDate.setEnabled(true);
+	   
 	   this.dtpSystemStartDate.setDate(new Date());
+	   this.dtpSystemStartDate.setEnabled(true);
+	   
 	   this.dtpSystemEndDate.setDate(new Date());
+	   this.dtpSystemEndDate.setEnabled(true);
+	   
 	   this.dtpNetworkingStartDate.setDate(new Date());
+	   this.dtpNetworkingStartDate.setEnabled(true);
+	   
 	   this.dtpNetworkingEndDate.setDate(new Date());
+	   this.dtpNetworkingEndDate.setEnabled(true);
+	   
 	   this.dtpSyberStartDate.setDate(new Date());
+	   this.dtpSyberStartDate.setEnabled(true);
+	   
 	   this.dtpSyberEndDate.setDate(new Date());
+	   this.dtpSyberEndDate.setEnabled(true);
+	   
 	   this.dtpFinalTest.setDate(new Date()); 
+	   this.dtpFinalTest.setEnabled(true);
+	   
 	   this.cmbNetworkingLecturer.setSelectedIndex(-1); 
+	   this.cmbNetworkingLecturer.setEnabled(true);
 	  currentNetworkingLecturer =-1;
+	  
 	  this.cmbSystemLecturer.setSelectedIndex(-1);
+	  this.cmbSystemLecturer.setEnabled(true);
 	  currentSystemLecturer=-1;	
+	  
 	  this.cmbSyberLecturer.setSelectedIndex(-1); 
+	  this.cmbSyberLecturer.setEnabled(true);
 	 currentSyberLecturer=-1;
+	 
 	   this.m_table=table;	  
+	   
+	   btnSave.setVisible(true);
+	   loadMode=false;
    }
   
+   public void LoadCourseForReadOnly (CoursesController c)
+
+   {
+	   this.setTitle("פרטי קורס");
+       frameTitel="פרטי קורס";
+	   this.txtCourseId.setText(String.valueOf(c.GetCourseID()));
+	   this.txtCourseId.setEnabled(false);
+	   cmbDaysOfWeek.setSelectedIndex(c.GetCourseDayOfWeekID()-1);
+	   cmbDaysOfWeek.setEnabled(false);
+	   cmbCourseType.setSelectedIndex(c.GetCourseType()-1);
+	   cmbCourseType.setEnabled(false);
+	   this.dtpStartDate.setDate(c.GetCourseStartDate());
+	   dtpStartDate.setEnabled(false);
+	   this.dtpEndDate.setDate(c.GetCourseEndDate());
+	   dtpEndDate.setEnabled(false);
+	   this.dtpSystemStartDate.setDate(c.GetSystemStartDate());
+	   dtpSystemStartDate.setEnabled(false);
+	   this.dtpSystemEndDate.setDate(c.GetSystemEndDate());
+	   dtpSystemEndDate.setEnabled(false);
+	   this.dtpNetworkingStartDate.setDate(c.GetNetworkingStartDate());
+	   dtpNetworkingStartDate.setEnabled(false);
+	   this.dtpNetworkingEndDate.setDate(c.GetNetworkingEndDate());
+	   dtpNetworkingEndDate.setEnabled(false);
+	   this.dtpSyberStartDate.setDate(c.GetSyberStartDate());
+	   dtpSyberStartDate.setEnabled(false);
+	   this.dtpSyberEndDate.setDate(c.GetSyberEndDate());
+	   dtpSyberEndDate.setEnabled(false);
+	   this.dtpFinalTest.setDate(c.GetTestDate());
+	   dtpFinalTest.setEnabled(false);
+	  
+	   for(int i=0;i< tableSpecializationInNetwork.getRowCount();i++)
+	   {
+		   if(Integer.parseInt(tableSpecializationInNetwork.getValueAt(i,0).toString())==c.GetNetworkingLecturerID())
+		   {
+			   this.cmbNetworkingLecturer.setSelectedIndex(i); 
+			   this.cmbNetworkingLecturer.setEnabled(false);
+		   }
+	   }
+	 
+	   for(int i=0;i< tableSpecializationInSystem.getRowCount();i++)
+	   {
+		   if(Integer.parseInt(tableSpecializationInSystem.getValueAt(i,0).toString())==c.GetSystemLecturerID())
+		   {
+			   this.cmbSystemLecturer.setSelectedIndex(i);
+			   this.cmbSystemLecturer.setEnabled(false);
+		   }
+	   }
+	   
+	   for(int i=0;i< tableSpecializationInSyber.getRowCount();i++)
+	   {
+		   if(Integer.parseInt(tableSpecializationInSyber.getValueAt(i,0).toString())==c.GetSyberLecturerID())
+		   {
+			   this.cmbSyberLecturer.setSelectedIndex(i); 
+			   this.cmbSyberLecturer.setEnabled(false);
+		   }
+	   }
+	   btnSave.setVisible(false);
+	   loadMode=false;
+   }
 	
-	public static void main(String[] args) {
+   
+   
+   public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddOrEditCourseView frame = new AddOrEditCourseView();
-					frame.setSize(1600, 700);
+					
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -314,8 +432,11 @@ public class AddOrEditCourseView extends JFrame {
         cmbNetworkingLecturer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 if(cmbNetworkingLecturer.getSelectedItem()!=null){
-                	
-                	selectedNetworkingLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbNetworkingLecturer.getSelectedItem()));
+                		selectedNetworkingLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbNetworkingLecturer.getSelectedItem()));
+                		String curr=(KeyToString((java.util.Map.Entry<String, String>) cmbNetworkingLecturer.getItemAt(currentNetworkingLecturer)));
+                if(lecturersController.IsLecturerActive(Integer.parseInt(selectedNetworkingLecturer))==true && selectedNetworkingLecturer!=curr)
+                {
+                		                	
                 	
                 	if(selectedNetworkingLecturer!=null  &&selectedNetworkingLecturer!="" &&txtCourseId.getText()!=null &&txtCourseId.getText()!="" 
                 			&&selectedCourseType!=null &&selectedCourseType!="" && selectedDayOfWeek!=null  && selectedDayOfWeek!="" &&dtpStartDate.getDate()!=null  )
@@ -326,14 +447,35 @@ public class AddOrEditCourseView extends JFrame {
                 	}
                 	else
                 	{
+                		if(loadMode==false)
+                    	{
                 		 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא רשום לקורס אחר בטווח הזה.","הודעת מערכת",1);
                 		 cmbNetworkingLecturer.setSelectedIndex(currentNetworkingLecturer);
+                 		selectedNetworkingLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbNetworkingLecturer.getSelectedItem()));                  	
+                    	}
                 	}
                 	}
-                } else {
+                } 
+                           
+                else
+                {
+                	//Integer.parseInt(selectedNetworkingLecturer)!=LoadedcoursesController.GetNetworkingLecturerID()
+                	if(loadMode==false)
+                	{
+                	 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא אינו פעיל","הודעת מערכת",1);
+                	 cmbNetworkingLecturer.setSelectedIndex(currentNetworkingLecturer);
+             		selectedNetworkingLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbNetworkingLecturer.getSelectedItem()));   
+                	}
+              	
+                }
+                }
+                else
+                {
                 	selectedNetworkingLecturer=null;
                 }
+              
             }
+            
         });
         
 	
@@ -403,7 +545,11 @@ public class AddOrEditCourseView extends JFrame {
            public void actionPerformed(ActionEvent e) {   	   
                if(cmbSystemLecturer.getSelectedItem()!=null){
             	   selectedSystemLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSystemLecturer.getSelectedItem()));
-               	
+           		String curr=(KeyToString((java.util.Map.Entry<String, String>) cmbSystemLecturer.getItemAt(currentSystemLecturer)));
+
+             if(lecturersController.IsLecturerActive(Integer.parseInt(selectedSystemLecturer))==true)
+                {
+                   
                	if(selectedSystemLecturer!=null  &&selectedSystemLecturer!="" &&txtCourseId.getText()!=null &&txtCourseId.getText()!="" 
                			&&selectedCourseType!=null &&selectedCourseType!="" && selectedDayOfWeek!=null  && selectedDayOfWeek!="" &&dtpStartDate.getDate()!=null )
                	{
@@ -413,11 +559,27 @@ public class AddOrEditCourseView extends JFrame {
                	}
                	else
                	{
+               		if(loadMode==false)
+               				{
                		 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא רשום לקורס אחר בטווח הזה.","הודעת מערכת",1);
                		cmbSystemLecturer.setSelectedIndex(currentSystemLecturer);
+               		selectedSystemLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSystemLecturer.getSelectedItem()));
+               				}
                	}
                	}
-               	selectedSystemLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSystemLecturer.getSelectedItem()));
+               	
+               }
+             else
+             {
+            	 if(loadMode==false)
+             	{
+             	 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא אינו פעיל","הודעת מערכת",1);
+             	cmbSystemLecturer.setSelectedIndex(currentSystemLecturer);
+             	selectedSystemLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSystemLecturer.getSelectedItem()));
+             	}
+             	
+             }
+               	
                } else {
                	selectedSystemLecturer=null;
                }
@@ -491,7 +653,10 @@ public class AddOrEditCourseView extends JFrame {
            public void actionPerformed(ActionEvent e) {
                if(cmbSyberLecturer.getSelectedItem()!=null){
             	   selectedSyberLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSyberLecturer.getSelectedItem()));
-                  	
+            		String curr=(KeyToString((java.util.Map.Entry<String, String>) cmbSyberLecturer.getItemAt(currentSyberLecturer)));
+            	   if(lecturersController.IsLecturerActive(Integer.parseInt(selectedSyberLecturer))==true && selectedSyberLecturer!=curr)
+                   {
+                     
                   	if(selectedSyberLecturer!=null  &&selectedSyberLecturer!="" &&txtCourseId.getText()!=null &&txtCourseId.getText()!="" 
                   			&&selectedCourseType!=null &&selectedCourseType!="" && selectedDayOfWeek!=null  && selectedDayOfWeek!="" &&dtpStartDate.getDate()!=null )
                   	{
@@ -501,12 +666,30 @@ public class AddOrEditCourseView extends JFrame {
                   	}
                   	else
                   	{
-                  		 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא רשום לקורס אחר בטווח הזה.","הודעת מערכת",1);
+                  		 if(loadMode==false)
+                  		 {
+                     	JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא רשום לקורס אחר בטווח הזה.","הודעת מערכת",1);
                   		cmbSyberLecturer.setSelectedIndex(currentSyberLecturer);
+                     	}
                   	}
                   	}
                   	selectedSyberLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSyberLecturer.getSelectedItem()));
-                  } else {
+                  	
+                   }
+            	   else
+                   {
+            		   if(loadMode==false)
+                    	{
+                   	 JOptionPane.showMessageDialog(null,"אינך יכול לבחור במרצה זה משום שהוא אינו פעיל","הודעת מערכת",1);
+                   	cmbSyberLecturer.setSelectedIndex(currentSyberLecturer);
+                   	selectedSyberLecturer= (KeyToString((java.util.Map.Entry<String, String>) cmbSyberLecturer.getSelectedItem()));
+                    	}
+                   	
+                   }
+            	   
+                  } 
+               
+               else {
                   	selectedSyberLecturer=null;
                   }
            }
@@ -547,10 +730,7 @@ public class AddOrEditCourseView extends JFrame {
 		panel.setBounds(10, 605, 167, 33);
 		contentPane.add(panel);
 		
-		JButton btnCancel = new JButton("\u05D1\u05D8\u05DC");
-		panel.add(btnCancel);
-		
-		JButton btnSave = new JButton("\u05E9\u05DE\u05D5\u05E8");
+	
 	
 		
 		btnSave.addActionListener(new ActionListener() {

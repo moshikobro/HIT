@@ -225,6 +225,31 @@ public Course()
     	return this.courseRepository.GetStudentsInCourse(courseID);
     }
     
+
+    
+    public JTable GetCoursesForStudents()
+    {
+    	return this.courseRepository.GetCoursesForStudents();
+    }
+    
+    
+    public boolean IsCourseEnded(int courseID)
+    {
+    	return this.courseRepository.IsCourseEnded(courseID);
+    }
+    
+    
+   public boolean IsCourseHaveStudents(int courseID)
+  {
+    	return this.courseRepository.IsCourseHaveStudents(courseID);
+  }
+   
+   public boolean AddStudentToCourse(String StudentID,int courseID)
+	 {
+		 return this.courseRepository.AddStudentToCourse(StudentID,courseID);
+	 } 
+   
+   
    }
     	 
 

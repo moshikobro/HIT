@@ -59,6 +59,32 @@ public class LecturerRepository {
 	    	return table;
 	    }
 	      
+     
+     public JTable GetSpecializations()
+	    {
+	    		
+		    ResultSet rs=null;
+		    JTable table=null;
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			}catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}		
+						
+			try
+			{			
+				CallableStatement cstmt = this.conn.prepareCall("{call GetSpecializations()}");
+				 rs = cstmt.executeQuery();				
+				table = new JTable(buildTableModel(rs));
+														
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}	
+	    	return table;
+	    }
            
      public JTable  GetLecturersForSpecializationInNetwork()
 	    {
@@ -135,6 +161,32 @@ public class LecturerRepository {
 			}	
 	    	return table;
 	    }
+     
+     public JTable  GetStatuses()
+	    {
+	    		
+		    ResultSet rs=null;
+		    JTable table=null;
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			}catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}		
+						
+			try
+			{			
+				CallableStatement cstmt = this.conn.prepareCall("{call  GetStatuses()}");
+				 rs = cstmt.executeQuery();				
+				table = new JTable(buildTableModel(rs));
+														
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}	
+	    	return table;
+	    }
 	      
    
 	 private static DefaultTableModel buildTableModel(ResultSet rs)
@@ -162,31 +214,54 @@ public class LecturerRepository {
 	        return new DefaultTableModel(data, columnNames);
 	    }
 	
-	
-	public Boolean SetLecturerDetails(Course c)
+
+	public Boolean InsertNewLecturer (Lecturer l)
+	{
+		try
+		{
+		 String commandText = "{call InsertNewLecturer(?,?,?,?,?,?,?,?,?,?)}";
+			CallableStatement stmt = this.conn.prepareCall(commandText);
+		    stmt.setObject(1,l.GetID());
+		    stmt.setObject(2, l.GetfirstName());
+		    stmt.setObject(3, l.GetLastName());
+		    stmt.setObject(4, l.GetAddress());
+		    stmt.setObject(5,new java.sql.Date(l.GetbirthDate().getTime()));
+		    stmt.setObject(6,l.GetSpecializationID_1());
+		    stmt.setObject(7,l.GetSpecializationID_2());
+		    stmt.setObject(8,l.GetSpecializationID_3());
+		    stmt.setObject(9,l.GetPhoneNumber());
+		    stmt.setObject(10,l.GetStatus());
+		   
+		    boolean gotResults = stmt.execute();		
+			 return true;
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}	
+			return false;
+	}
+		
+		
+	public Boolean SetLecturerDetails(Lecturer l)
 	{
 	
 		try
 		{	
 	
-		 String commandText = "{call UpdateCourse(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+		 String commandText = "{call UpdateLecturer(?,?,?,?,?,?,?,?,?,?)}";
 		CallableStatement stmt = this.conn.prepareCall(commandText);
-	    stmt.setObject(1,c.GetCourseEndDate());
-	    stmt.setObject(2, c.GetCourseType());
-	    stmt.setObject(3, c.GetCourseStartDate());
-	    stmt.setObject(4, c.GetCourseEndDate());
-	    stmt.setObject(5,c.GetCourseEndDate());
-	    stmt.setObject(6,c.GetCourseNetworkingLecturer());
-	    stmt.setObject(7,c.GetCourseSystemLecturer());
-	    stmt.setObject(8,c.GetCourseSyberLecturer());
-	    stmt.setObject(9,c.GetNetworkingStartDate());
-	    stmt.setObject(10,c.GetSystemStartDate());
-	    stmt.setObject(11,c.GetSyberStartDate());
-	    stmt.setObject(12,c.GetNetworkingEndDate());
-	    stmt.setObject(13,c.GetSystemEndDate());
-	    stmt.setObject(14,c.GetSyberEndDate());
-	    stmt.setObject(15,c.GetTestDate());
-	    
+	    stmt.setObject(1,l.GetID());
+	    stmt.setObject(2, l.GetfirstName());
+	    stmt.setObject(3, l.GetLastName());
+	    stmt.setObject(4, l.GetAddress());
+	    stmt.setObject(5,new java.sql.Date(l.GetbirthDate().getTime()));
+	    stmt.setObject(6,l.GetSpecializationID_1());
+	    stmt.setObject(7,l.GetSpecializationID_2());
+	    stmt.setObject(8,l.GetSpecializationID_3());
+	    stmt.setObject(9,l.GetPhoneNumber());
+	    stmt.setObject(10,l.GetStatus());
+	   
 	    boolean gotResults = stmt.execute();		
 		 return true;
 		}
@@ -198,15 +273,15 @@ public class LecturerRepository {
 	}
 		
 	
-	public Boolean DeleteLecturer (int LecturerID)
+	public Boolean DeleteLecturer (String LecturerID)
 	{
 		try
 		{	
 	
-		 String commandText = "{call DeleteCourse(?)}";
+		 String commandText = "{call DeleteLecturer(?)}";
 		CallableStatement stmt = this.conn.prepareCall(commandText);
 	     stmt.setObject(1,LecturerID);    
-	    boolean gotResults = stmt.execute();		
+	     boolean gotResults = stmt.execute();		
 		 return true;
 		}
 		catch (SQLException e)
@@ -243,6 +318,85 @@ public class LecturerRepository {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	public Boolean CanBeDeleted (String lecturerID)
+	{
+		try
+		{	
+	
+		 String commandText = "{call CanBeDeleted(?,?)}";
+		 CallableStatement stmt = this.conn.prepareCall(commandText);
+		     stmt.setObject(1,lecturerID);
+		    stmt.registerOutParameter(2,Types.INTEGER);
+	        stmt.executeUpdate();	
+	        int numOfCourses = stmt.getInt(2);
+	        
+	     if(numOfCourses>0)
+		     return true;
+	     
+	     else
+	    	 return false; 
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public Boolean IsLecturerActive (int lecturerSeqID)
+	{
+		try
+		{	
+	
+		 String commandText = "{call IsLecturerActive(?,?)}";
+		 CallableStatement stmt = this.conn.prepareCall(commandText);
+		     stmt.setObject(1,lecturerSeqID);
+		    stmt.registerOutParameter(2,Types.INTEGER);
+	        stmt.executeUpdate();	
+	        int activeID = stmt.getInt(2);
+	        
+	     if(activeID>0)
+		     return true;
+	     
+	     else
+	    	 return false; 
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+	public Boolean IsLecturerExists (String lecturerID)
+	{
+		try
+		{	
+	
+		 String commandText = "{call IsLecturerExists(?,?)}";
+		 CallableStatement stmt = this.conn.prepareCall(commandText);
+		     stmt.setObject(1,lecturerID);
+		    stmt.registerOutParameter(2,Types.INTEGER);
+	        stmt.executeUpdate();	
+	        int isEnd = stmt.getInt(2);
+	        
+	     if(isEnd>0)
+		     return true;
+	     
+	     else
+	    	 return false; 
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	

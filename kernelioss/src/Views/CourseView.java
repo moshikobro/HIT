@@ -1,3 +1,5 @@
+
+
 package Views;
 
 import Contollers.CoursesController;
@@ -30,6 +32,8 @@ import javax.swing.table.TableModel;
 import javax.swing.JPanel;
 import Views.AddOrEditCourseView;
 import Models.Course;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 
@@ -42,6 +46,13 @@ public  class CourseView extends  JFrame{
 	public CoursesController controller=new CoursesController();
 	 final JTable table;
 	  AddOrEditCourseView ad = AddOrEditCourseView.getAddOrEditCourseView();
+
+      JButton remove = new JButton("הסר");
+      JButton clear = new JButton("נקה בחירה");
+      JButton add = new JButton("הוסף");
+      JButton edit = new JButton("ערוך");
+      JButton readOnly = new JButton("צפה בפרטים");
+      JButton students = new JButton("סטודנטים בקורס");
 
 			public static void main(String[] args) {
 				EventQueue.invokeLater(new Runnable() {
@@ -76,8 +87,7 @@ public  class CourseView extends  JFrame{
 
 	public CourseView() {
 	
-		   
-		
+		   		
 			setTitle("ניהול קורסים");	
 			setResizable(true);
 			setType(Type.POPUP);
@@ -93,23 +103,33 @@ public  class CourseView extends  JFrame{
 			
 	        TableModel  tm=this.controller.GetData().getModel();
 	        table = new JTable(tm);
+	        table.addMouseListener(new MouseAdapter() {
+	        	@Override
+	        	public void mouseClicked(MouseEvent e) {
+	        		if(table.getSelectedRow() != -1)
+	            	{
+	        		  int row = table.getSelectedRow();
+		           	  Date endDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 3).toString()));
+		           		if (endDate.before(new Date())==true)
+		           		{
+		           			edit.setEnabled(false);
+		           		}
+		           		else
+		           		{
+		           			edit.setEnabled(true);
+		           		}
+		           		
+	            	}
+	        	}
+	        });
  	        
 	        RemoveColumns(table);
 	    
 	        
 	        table.setFillsViewportHeight(true);
-	        JScrollPane pane = new JScrollPane(table);
+	        JScrollPane pane = new JScrollPane(table); 
 
-	 
-	        JButton remove = new JButton("הסר");
-	        JButton clear = new JButton("נקה בחירה");
-	        JButton add = new JButton("הוסף");
-	        JButton edit = new JButton("ערוך");
-	        JButton students = new JButton("סטודנטים בקורס");
-
-	        // Enables row selection mode and disable column selection
-	        // mode.
-	        
+	      
 	        ListSelectionModel selectionModel = table.getSelectionModel();
 	        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        
@@ -122,14 +142,21 @@ public  class CourseView extends  JFrame{
 	            public void actionPerformed(ActionEvent event) {
 	            	if(table.getSelectedRow() != -1)
 	            	{
-	           	int result= JOptionPane.showConfirmDialog(null,"האם אתה בטוח שברצונך להסיר את הקורס?","הודעת מערכת", JOptionPane.YES_NO_CANCEL_OPTION);
-	           	 if(result == 0)//yes
-	             {
-	           		int column = 0;
-	           		int row = table.getSelectedRow();
-	           		String value = table.getModel().getValueAt(row, column).toString();
-	           		int courseID=Integer.parseInt(value);
-	           		
+	            		int column = 0;
+		           		int row = table.getSelectedRow();
+		           		String value = table.getModel().getValueAt(row, column).toString();
+		           		int courseID=Integer.parseInt(value);
+		           		
+	            		if(controller.IsCourseHaveStudents(courseID)==true)
+	            		{
+	            			 JOptionPane.showMessageDialog(null,"לא ניתן למחוק את הקורס מכיוון שרשומים אליו סטודנטים!","הודעת מערכת",1);
+	            			 return;
+	            		}
+	            		
+	            	int result= JOptionPane.showConfirmDialog(null,"האם אתה בטוח שברצונך להסיר את הקורס?","הודעת מערכת", JOptionPane.YES_NO_CANCEL_OPTION);
+	                if(result == 0)//yes
+	                {
+	           		 		
 	           		boolean res=controller.DeleteCourse(courseID);
 	           		
 	           		if(res==true)
@@ -197,38 +224,9 @@ public  class CourseView extends  JFrame{
 	            public void actionPerformed(ActionEvent e) {
 	            	if(table.getSelectedRow() != -1)
 	            	{
-	            		int row = table.getSelectedRow();
-		           		
-	            		int  corseID=0;
-	            		 int  corseTypeID=0;
-						 Date startDate;
-						 Date endDate;
-		            	 int  dayOfWeekID=0;
-		            	
-	            		  corseID=Integer.parseInt(table.getModel().getValueAt(row, 0).toString());
-	            		  corseTypeID=Integer.parseInt(table.getModel().getValueAt(row, 15).toString());		             		 
-						 
-	            		  startDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 2).toString()));
-						  endDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 3).toString()));
-		            	  dayOfWeekID=Integer.parseInt(table.getModel().getValueAt(row, 19).toString());
-		            	
-		            	 Date networkingStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 8).toString()));
-		            	 Date systemStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 10).toString()));
-		            	 Date syberStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 12).toString()));
-		            	 Date networkingEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 9).toString()));
-		            	 Date systemEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 11).toString()));
-		            	 Date  syberEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 13).toString()));
-		            	 Date  testDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 14).toString()));;
-		            		
-		            	 int  networkingLecturerID=Integer.parseInt(table.getModel().getValueAt(row, 16).toString());
-		            	 int  systemLecturerID=Integer.parseInt(table.getModel().getValueAt(row, 17).toString());
-		            	 int  syberLecturerID=Integer.parseInt(table.getModel().getValueAt(row,18).toString());
-		            	 
-		            	 CoursesController cs=new CoursesController(corseID,corseTypeID,startDate,endDate,dayOfWeekID,networkingLecturerID,systemLecturerID,syberLecturerID,networkingStartDate
-		            			 ,systemStartDate,syberStartDate,networkingEndDate,systemEndDate,syberEndDate,testDate);
-		            	
-		            		              
-		            	ad.LoadCourseForEdit(cs,table);
+	            		int row = table.getSelectedRow();	
+	            		ad.setLoanMode(true);
+		            	ad.LoadCourseForEdit(GetSelectedRowData(row),table);
 		            	ad.setVisible(true);
 	          
 	            	}
@@ -244,10 +242,30 @@ public  class CourseView extends  JFrame{
 	        add.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent event) {
 	            	
+	            	ad.setLoanMode(true);
 	            	ad.AddNewCourse(table);
 	            	ad.setVisible(true);       
 	            }
 	        });
+	        
+	    
+	        readOnly.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	if(table.getSelectedRow() != -1)
+	            	{
+	            		int row = table.getSelectedRow();
+	            		ad.setLoanMode(true);
+		            	ad.LoadCourseForReadOnly(GetSelectedRowData(row));            	
+		            	ad.setVisible(true);
+	          
+	            	}
+	            	else
+	            	{
+	            		 JOptionPane.showMessageDialog(null,"אנא בחר קורס לעריכה","הודעת מערכת",1);
+	            	}
+	           	}
+	            }
+	        );
 
 	        JPanel command = new JPanel(new FlowLayout());
 	        command.add(remove);
@@ -255,9 +273,10 @@ public  class CourseView extends  JFrame{
 	        command.add(add);
 	        command.add(edit);
 	        command.add(students);
+	        command.add(readOnly);
 	        
-	        add(pane, BorderLayout.CENTER);
-	        add(command, BorderLayout.SOUTH);		      
+	        getContentPane().add(pane, BorderLayout.CENTER);
+	        getContentPane().add(command, BorderLayout.SOUTH);		      
 	}
 
 	
@@ -272,7 +291,7 @@ public  class CourseView extends  JFrame{
 	
 	
 
-  public void RemoveColumns (JTable table)
+  private void RemoveColumns (JTable table)
   {
 	  //--------------invisible 5 last columns--------------------------//
 	    int numOfCol=table.getColumnModel().getColumnCount();
@@ -299,7 +318,39 @@ public  class CourseView extends  JFrame{
 	       //--------------invisible 5 last columns--------------------------//
   }
 
-	
+  private CoursesController GetSelectedRowData(int row)
+  {
+
+
+		int  corseID=0;
+		 int  corseTypeID=0;
+		 Date startDate;
+		 Date endDate;
+  	 int  dayOfWeekID=0;
+  	
+		  corseID=Integer.parseInt(table.getModel().getValueAt(row, 0).toString());
+		  corseTypeID=Integer.parseInt(table.getModel().getValueAt(row, 15).toString());		             		 
+		 
+		  startDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 2).toString()));
+		  endDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 3).toString()));
+  	  dayOfWeekID=Integer.parseInt(table.getModel().getValueAt(row, 19).toString());
+  	
+  	 Date networkingStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 8).toString()));
+  	 Date systemStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 10).toString()));
+  	 Date syberStartDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 12).toString()));
+  	 Date networkingEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 9).toString()));
+  	 Date systemEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 11).toString()));
+  	 Date  syberEndDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 13).toString()));
+  	 Date  testDate=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 14).toString()));;
+  		
+  	 int  networkingLecturerID=Integer.parseInt(table.getModel().getValueAt(row, 16).toString());
+  	 int  systemLecturerID=Integer.parseInt(table.getModel().getValueAt(row, 17).toString());
+  	 int  syberLecturerID=Integer.parseInt(table.getModel().getValueAt(row,18).toString());
+  	 
+  	 CoursesController cs=new CoursesController(corseID,corseTypeID,startDate,endDate,dayOfWeekID,networkingLecturerID,systemLecturerID,syberLecturerID,networkingStartDate
+  			 ,systemStartDate,syberStartDate,networkingEndDate,systemEndDate,syberEndDate,testDate);
+  	 return cs;
+  }
 	
 	
 

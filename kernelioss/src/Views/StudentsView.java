@@ -22,33 +22,29 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import Contollers.CoursesController;
-import Contollers.LecturersController;
+import Contollers.StudentsController;
 
-public class LecturersView extends JFrame {
+public class StudentsView extends JFrame {
 
 	
-	public LecturersController controller=new LecturersController();
+	public StudentsController controller=new StudentsController();
 	 final JTable table;
-	 AddOrEditLecturerView ad = AddOrEditLecturerView.getAddOrEditLecturerView();
-	/**
-	 * Launch the application.
-	 */
+	 AddOrEditStudentView ad = AddOrEditStudentView.getAddOrEditStudentView();
+
 	 
-	 
-	 static LecturersView m_LecturersView;
+	 static StudentsView m_StudentsView;
 	 	
-		public static LecturersView getLecturersView() {
-			if (m_LecturersView == null)
-				m_LecturersView = new LecturersView();
-			return m_LecturersView;
+		public static StudentsView getStudentsView() {
+			if (m_StudentsView == null)
+				m_StudentsView = new StudentsView();
+			return m_StudentsView;
 		}
 		
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LecturersView frame = new LecturersView();
+					StudentsView frame = new StudentsView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,8 +56,8 @@ public class LecturersView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public LecturersView() {
-		setTitle("ניהול מרצים");	
+	public StudentsView() {
+		setTitle("ניהול סטודנטים");	
 		setResizable(true);
 		setType(Type.POPUP);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	
@@ -104,22 +100,17 @@ public class LecturersView extends JFrame {
             	if(table.getSelectedRow() != -1)
             	{
             		
-           	if (controller.CanBeDeleted(table.getModel().getValueAt( table.getSelectedRow(), 0).toString()) ==true)
-             	{
-               	 JOptionPane.showMessageDialog(null,"אינך יכול להסיר מרצה זה מכיוון שהוא שובץ לקורס,שים לב כי באפשרותך לשנות את הסטטוס ללא פעיל. ","הודעת מערכת",1);
-               	 return;
-               }
             		
-           	int result= JOptionPane.showConfirmDialog(null,"האם אתה בטוח שברצונך להסיר את המרצה?","הודעת מערכת", JOptionPane.YES_NO_CANCEL_OPTION);
+           	int result= JOptionPane.showConfirmDialog(null,"האם אתה בטוח שברצונך להסיר את הסטודנט?","הודעת מערכת", JOptionPane.YES_NO_CANCEL_OPTION);
            	 if(result == 0)//yes
              { 
            		
            		int column = 0;
            		int row = table.getSelectedRow();
-           		String LecturerID = table.getModel().getValueAt(row, column).toString();
+           		String StudentID = table.getModel().getValueAt(row, column).toString();
          		
   
-           		boolean res=controller.DeleteLecturer(LecturerID);         		
+           		boolean res=controller.DeleteStudent(StudentID);         		
            		if(res==true)
            			if(row+1>= table.getModel().getRowCount())
            			{
@@ -133,7 +124,7 @@ public class LecturersView extends JFrame {
            			}
            		else
            		{
-           		 JOptionPane.showMessageDialog(null,"התרחשה תקלה במחיקת המרצה!","הודעת מערכת",1);
+           		 JOptionPane.showMessageDialog(null,"התרחשה תקלה במחיקת הסטודנט!","הודעת מערכת",1);
            		}
            		      
              }
@@ -174,40 +165,36 @@ public class LecturersView extends JFrame {
             		int row = table.getSelectedRow();
 	           		
             		
-            		 String lecturerID;
-            		 String lecturerFirstName;
-            		 String lecturerLastName;
+            		 String studentID;
+            		 String studentFirstName;
+            		 String studentLastName;
             		 String address;
             		 Date birthDay;
-            		 int specializationID_1;
-            		 int specializationID_2;
-            		 int specializationID_3;
             		 String Phone;
-            		 int status=0;
+            		 int courseID=0;
+            		 int grade=0;
+            		 Date finalTest;
             		
             		            	
-            		 lecturerID=table.getModel().getValueAt(row, 0).toString();
-            		 lecturerFirstName=table.getModel().getValueAt(row, 1).toString();		             		 
-            		 lecturerLastName=table.getModel().getValueAt(row,2).toString();	
+            		 studentID=table.getModel().getValueAt(row, 0).toString();
+            		 studentFirstName=table.getModel().getValueAt(row, 1).toString();		             		 
+            		 studentLastName=table.getModel().getValueAt(row,2).toString();	
             		 address=table.getModel().getValueAt(row,3).toString();
             		 birthDay=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 4).toString()));
-            		 Phone=table.getModel().getValueAt(row,8).toString();
-            		 status=Integer.parseInt(table.getModel().getValueAt(row,10).toString());
-                      specializationID_1=Integer.parseInt(table.getModel().getValueAt(row, 11).toString());
-	            	  specializationID_2=Integer.parseInt(table.getModel().getValueAt(row, 12).toString());
-	            	  specializationID_3=Integer.parseInt(table.getModel().getValueAt(row,13).toString());
-	            	
+            		 Phone=table.getModel().getValueAt(row,5).toString();             		
+	            	  grade=Integer.parseInt(table.getModel().getValueAt(row,6).toString());
+	            	  courseID=Integer.parseInt(table.getModel().getValueAt(row,7).toString());
+	            	  finalTest=convertFromSQLDateToJAVADate(java.sql.Date.valueOf(table.getModel().getValueAt(row, 8).toString()));
 	            	 
 	            	 
-	            	  LecturersController lc=new LecturersController( lecturerFirstName, lecturerLastName, lecturerID, address, Phone, birthDay,
-	            						 specializationID_1, specializationID_2, specializationID_3,status);
-	            	           		              
-	            	  ad.LoadLecturerForEdit(lc,table);
+	            	  StudentsController s=new StudentsController( studentFirstName, studentLastName, studentID, address, Phone, birthDay,grade);
+	            	  ad.setLoanMode(true);		              
+	            	  ad.LoadStudentForEdit(s, table, courseID, finalTest);
 	            	  ad.setVisible(true);
             	}
             	else
             	{
-            		 JOptionPane.showMessageDialog(null,"אנא בחר מרצה לעריכה","הודעת מערכת",1);
+            		 JOptionPane.showMessageDialog(null,"אנא בחר סטודנט לעריכה","הודעת מערכת",1);
             	}
            	}
             }
@@ -215,8 +202,8 @@ public class LecturersView extends JFrame {
 
         add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-            	
-            	ad.AddNewLecturer(table);
+            	ad.setLoanMode(true);
+            	ad.AddNewStudent(table);
             	ad.setVisible(true);       
             }
         });
@@ -245,7 +232,7 @@ public class LecturersView extends JFrame {
 	
 	 public void RemoveColumns (JTable table)
 	  {
-		  //--------------invisible 3 last columns--------------------------//
+		  //--------------invisible 2 last columns--------------------------//
 		    int numOfCol=table.getColumnModel().getColumnCount();
 		       table.getColumnModel().getColumn(numOfCol-1).setWidth(0);
 		       table.getColumnModel().getColumn(numOfCol-1).setMinWidth(0);
@@ -254,17 +241,8 @@ public class LecturersView extends JFrame {
 		       table.getColumnModel().getColumn(numOfCol-2).setWidth(0);
 		       table.getColumnModel().getColumn(numOfCol-2).setMinWidth(0);
 		       table.getColumnModel().getColumn(numOfCol-2).setMaxWidth(0);
-		       
-		       table.getColumnModel().getColumn(numOfCol-3).setWidth(0);
-		       table.getColumnModel().getColumn(numOfCol-3).setMinWidth(0);
-		       table.getColumnModel().getColumn(numOfCol-3).setMaxWidth(0);
-		       
-		       table.getColumnModel().getColumn(numOfCol-4).setWidth(0);
-		       table.getColumnModel().getColumn(numOfCol-4).setMinWidth(0);
-		       table.getColumnModel().getColumn(numOfCol-4).setMaxWidth(0);
-		       
-		   
-		       //--------------invisible 3 last columns--------------------------//
+		       		       	 	   
+		       //--------------invisible 2 last columns--------------------------//
 	  }
 	 
 
